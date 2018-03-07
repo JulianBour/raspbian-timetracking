@@ -3,6 +3,7 @@
 import RPi.GPIO as GPIO
 import SimpleMFRC522
 
+#function to read nfc tag
 def read():
 	reader = SimpleMFRC522.SimpleMFRC522()
 
@@ -11,7 +12,8 @@ def read():
 	finally:
         	GPIO.cleanup()
 		return staffId
-
+		
+#function to write new staff nfc tag
 def write():
 	reader = SimpleMFRC522.SimpleMFRC522()
 	try:
