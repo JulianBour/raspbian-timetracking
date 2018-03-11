@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import MySQLdb
-import datetime
+import timestamp
+import time
 
 def getConnection():
 	db = MySQLdb.connect(host="localhost",
@@ -26,13 +27,12 @@ def createUserTable(db, tableName):
 	cursor.close()
 
 def addNewRecord(db, tableName):
-	time_now = datetime.datetime.now()
-	print time_now
+	timeArray = timestamp.currentTimestamp()
 	cursor = db.cursor()
 	query = "INSERT INTO " + tableName + " (day,month,year,calendar_week,login_time,"\
-	"logout_time,is_logged_in,time_difference) VALUES "\
-	 "(1,3,2018,12, \'02:23:10\',\'12:02:12\',0,\'00:06:01\')"
-	print query
+	"is_logged_in) VALUES (" +\
+	str(timeArray[0]) + "," + str(timeArray[1]) +"," + str(timeArray[2]) + "," +\
+	str(timeArray[3]) + "," + "\'" + timeArray[4] + "\'" + ", 1)"
 	success = cursor.execute(query)
 	db.commit()
 	if success:
