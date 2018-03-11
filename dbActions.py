@@ -19,6 +19,7 @@ def checkIfUserTableAlreadyExists(db, tableName):
 
 def createUserTable(db, tableName):
 	cursor = db.cursor()
+	##TODO add 'id' for search stuff
 	query = "CREATE TABLE " + tableName  + " (day int(2), month int(2), year int(4),"\
 	"calendar_week tinyint(2), login_time time, logout_time time, is_logged_in tinyint(1),"\
 	"time_difference time)"
@@ -38,3 +39,21 @@ def addNewRecord(db, tableName):
 	if success:
 		print 'Time logged!'
 	cursor.close()
+
+def staffIsLoggedIn(db, tableName):
+	cursor = db.cursor()
+	query = "SELECT is_logged_in FROM " + tableName + " WHERE is_logged_in=1"
+	success = cursor.execute(query)
+	return success
+
+def staffLogout(db, tableName):
+	timeString = timestamp.currentTimestamp()[4]
+	cursor = db.cursor()
+	query = "SELECT login_time FROM " + tableName + " WHERE is_logged_in=1"
+	cursor.execute(query)
+## TODO inhalt von cursor richtig abfangen (in hh:mm:ss umwandeln, hat momentan (x, SEKUNDENANZAHL)
+	print "here"
+	for item in cursor:
+		print item
+	query = "UPDATE " + tableName + " SET logout_time=\'" + timeString + "\',is_logged_in=0 WHERE is_logged_in=1"
+	success = cursor.execute(query)
