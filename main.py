@@ -7,6 +7,7 @@ import dbActions
 connection = dbActions.getConnection()
 
 #endless loop for continuous reading
+#replace user by staff
 while 1:
 	#read staff tag
 	staffId = tagio.read()
@@ -22,7 +23,13 @@ while 1:
 	else:
 		###TODO remove 'print' for final version
 		print 'Timetable already exists and time will be logged now.'
-		dbActions.addNewRecord(connection, userTable)
+		staffIsLoggedIn = dbActions.staffIsLoggedIn(connection, userTable)
+		print staffIsLoggedIn
+		if staffIsLoggedIn > 0:
+			dbActions.staffLogout(connection, userTable)
+			print staffIsLoggedIn
+		else:
+			dbActions.addNewRecord(connection, userTable)
 
 
 	#system pause 
