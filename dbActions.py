@@ -24,7 +24,7 @@ def createUserTable(db, tableName):
 	"calendar_week tinyint(2), login_time time, logout_time time, is_logged_in tinyint(1),"\
 	"time_difference time)"
 	cursor.execute(query)
-	print 'Successfully created ' + tableName
+	print('Successfully created ' + tableName)
 	cursor.close()
 
 def addNewRecord(db, tableName):
@@ -37,7 +37,7 @@ def addNewRecord(db, tableName):
 	success = cursor.execute(query)
 	db.commit()
 	if success:
-		print 'Time logged!'
+		print('Eingelogt!')
 	cursor.close()
 
 def staffIsLoggedIn(db, tableName):
@@ -52,8 +52,8 @@ def staffLogout(db, tableName):
 	query = "SELECT login_time FROM " + tableName + " WHERE is_logged_in=1"
 	cursor.execute(query)
 ## TODO inhalt von cursor richtig abfangen (in hh:mm:ss umwandeln, hat momentan (x, SEKUNDENANZAHL)
-	print "here"
+	print("here")
 	for item in cursor:
-		print item
+		print(item)
 	query = "UPDATE " + tableName + " SET logout_time=\'" + timeString + "\',is_logged_in=0 WHERE is_logged_in=1"
 	success = cursor.execute(query)
