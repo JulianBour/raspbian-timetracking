@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import MySQLdb
 import timestamp
+from datetime import datetime
 import time
 
 def getConnection():
@@ -22,7 +23,7 @@ def createUserTable(db, tableName):
 	##TODO add 'id' for search stuff
 	query = "CREATE TABLE " + tableName  + " (day int(2), month int(2), year int(4),"\
 	"calendar_week tinyint(2), login_time time, logout_time time, is_logged_in tinyint(1),"\
-	"time_difference time)"
+	"time_at_work time)"
 	cursor.execute(query)
 	print 'Successfully created ' + tableName
 	cursor.close()
@@ -37,7 +38,9 @@ def addNewRecord(db, tableName):
 	success = cursor.execute(query)
 	db.commit()
 	if success:
-		print 'Time logged!'
+		print 'Successfully logged in!'
+	else:
+		print 'Something went wrong during Logging in! Please contact jb@ambimax.de'
 	cursor.close()
 
 def staffIsLoggedIn(db, tableName):
@@ -51,9 +54,15 @@ def staffLogout(db, tableName):
 	cursor = db.cursor()
 	query = "SELECT login_time FROM " + tableName + " WHERE is_logged_in=1"
 	cursor.execute(query)
-## TODO inhalt von cursor richtig abfangen (in hh:mm:ss umwandeln, hat momentan (x, SEKUNDENANZAHL)
-	print "here"
-	for item in cursor:
-		print item
-	query = "UPDATE " + tableName + " SET logout_time=\'" + timeString + "\',is_logged_in=0 WHERE is_logged_in=1"
+	logInTime = cursor.fetchone()[0]
+	deltaTime = timestamp.getCurrentTimeAsDatetime() - logInTime
+
+	query = "UPDATE " + tableName + " SET logout_time=\'" + timeString + "\',is_logged_in=0, time_at_work=\'" +\
+	deltaTime.strftime("%H:%M:%S") +  "\'  WHERE is_logged_in=1"
 	success = cursor.execute(query)
+	if success:
+                print 'Successfully logged out!'
+        else:
+                print 'Something went wrong during logging out! Please contact jb@ambimax.de'
+	db.commit()
+        cursor.close()
