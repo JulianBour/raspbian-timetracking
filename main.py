@@ -21,16 +21,11 @@ while 1:
 		dbActions.createUserTable(connection, userTable)
 	#log time if table already exist
 	else:
-		###TODO remove 'print' for final version
-		print('Timetable already exists and time will be logged now.')
 		staffIsLoggedIn = dbActions.staffIsLoggedIn(connection, userTable)
-		print(staffIsLoggedIn)
 		if staffIsLoggedIn > 0:
 			dbActions.staffLogout(connection, userTable)
-			print(staffIsLoggedIn)
 		else:
 			dbActions.addNewRecord(connection, userTable)
-
 
 
 	#system pause 

@@ -11,3 +11,6 @@ def currentTimestamp():
 	time = timestamp.time()
 	time = time.strftime("%H:%M:%S")
 	return (day, month, year, calendarweek, time)
+
+def getCurrentTimeAsDatetime():
+	return datetime.now()
