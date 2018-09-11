@@ -1,13 +1,8 @@
 #!/usr/bin/env python
-import tagio
-import time
-import timestamp
-import dbActions
+import logging
 
-connection = dbActions.getConnection()
 
 #endless loop for continuous reading
-#replace user by staff
 while 1:
 	#read staff tag
 	staffId = tagio.read()
