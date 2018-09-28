@@ -1,7 +1,8 @@
 import sys
 sys.path.append("/var/projects/raspbian-timetracking/timetracking")
 
-import logging as logging
+import alogging as alogging
+import fingerprint as fp
 from Tkinter import *
 from FullScreen import *
 from Functions import *
@@ -9,7 +10,7 @@ from main import *
 import time as time
 
 #Create database table before start
-logging.createTableIfNotExists()
+alogging.createTableIfNotExists()
 
 #Fenster erstellen
 root=Tk()
@@ -21,11 +22,14 @@ ORANGE = '#f4811e'
 BLACK = '#000000'
 WHITE = '#FFFFFF'
 GREY = '#949191'
+RED = '#FF0000'
 
 ###Frames erstellen
 #Head frame
-head = Frame(root, width = MAXWIDTH, height = MAXHEIGHT * 0.2 )
-head["bg"] = ORANGE
+standardHead = Frame(root, width = MAXWIDTH, height = MAXHEIGHT * 0.2 )
+standardHead["bg"] = ORANGE
+adminHead = Frame(root, width = MAXWIDTH, height = MAXHEIGHT * 0.2 )
+adminHead["bg"] = RED
 #Body frame
 body = Frame(root, width = MAXWIDTH, height = MAXHEIGHT * 0.6 )
 body["bg"] = GREY
@@ -33,18 +37,30 @@ body["bg"] = GREY
 footer = Frame(root, width = MAXWIDTH, height = MAXHEIGHT * 0.2 )
 footer["bg"] = ORANGE
 #Frames platzieren
-head.pack( side=TOP )
+standardHead.pack( side=TOP )
 footer.pack( side=BOTTOM )
 body.pack( side=BOTTOM )
-#Buttons
+
+###Buttons
+#Standard Buttons
+LogFooterButton = Button(standardHead, text='Admin', width = 7, height = 2, command = lambda: createAdminHead(),\
+                font = ("Helvetica", int(MAXHEIGHT * 0.05)))
 loginButton = Button(footer, text='Login', width = 7, height = 2, command = lambda: staffLogin(),\
                 font = ("Helvetica", int(MAXHEIGHT * 0.05)))
 logoutButton = Button(footer, text='Logout', width = 7, height = 2, command = lambda: staffLogout(), \
                 font = ("Helvetica", int(MAXHEIGHT * 0.05)))
 cancelButton = Button(footer, text='Abbruch', width = 7, height = 2, command = lambda: cancel(), \
                 font = ("Helvetica", int(MAXHEIGHT * 0.05)))
-devExitButton = Button(head, text='EXIT', width = 7, height = 2, command = lambda: devExit(), \
+#Dev Buttons
+#TODO remove for final version
+devExitButton = Button(standardHead, text='EXIT', width = 7, height = 2, command = lambda: devExit(), \
                 font = ("Helvetica", int(MAXHEIGHT * 0.05)))
+#Admin Buttons
+addFingerprintButton = Button(adminHead, text='Add finger', width = 7, height = 2, command = lambda: addFingerprint(), \
+                font = ("Helvetica", int(MAXHEIGHT * 0.05)))
+closeAdminHeadButton = Button(adminHead, text='Exit admin', width = 7, height = 2, command = lambda: exitAdminHead(), \
+                font = ("Helvetica", int(MAXHEIGHT * 0.05)))
+
 #Labels
 bodyMessage="Willkommen"
 authMessageLabel = Label(body, text=bodyMessage, font = ("Helvetica", int(MAXHEIGHT * 0.1)))
@@ -56,8 +72,28 @@ def cancel():
     createStandardFooter()
     createStandardBody()
 
+def addFingerprint():
+    bodyMessage = fp.addFinger()
+    authMessageLabel.config(text=bodyMessage, font = ("Helvetica", int(MAXHEIGHT * 0.05)))
+
 def devExit():
     root.destroy()
+
+def createAdminHead():
+    standardHead.pack_forget()
+    adminHead.pack( side=TOP )
+    addFingerprintButton.place(relx=0, anchor=NW)
+    closeAdminHeadButton.place(relx=1, anchor=NE)
+
+def exitAdminHead():
+    adminHead.pack_forget()
+    standardHead.pack( side=TOP )
+
+def createStandardHead():
+    LogFooterButton.place(relx=0, anchor=NW)
+
+    #TOTO remove dev buttons
+    devExitButton.place(relx=0.5, anchor=NW)
 
 def createStandardBody():
     bodyMessage="Willkommen"
@@ -93,19 +129,18 @@ def staffLogout():
     createLogFooter()
 
     #TODO staffId = scanner.scanFinger()
-    #TODO logging.login(staffId)
+    #TODO alogging.login(staffId)
     #TODO If success then delete label and print success and delete after 5 seconds
 
 #TODO remove function in final version
 def logoutAndQuit():
-    logging.logout(5)
+    alogging.logout(5)
 
 #create Footer
+createStandardHead()
 createStandardFooter()
 createStandardBody()
 
-#TOTO remove dev buttons
-devExitButton.place(relx=0.5, anchor=NW)
 
 app=FullScreenApp(root)
 root.mainloop()
