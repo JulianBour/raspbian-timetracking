@@ -19,7 +19,10 @@ def addFinger():
             pass
 
         ## Converts read image to characteristics and stores it in charbuffer 1
-        fingerHash = f.convertImage(0x01)
+        f.convertImage(0x01)
+        fingerHash = f.downloadCharacteristics(0x01)
+        print(fingerHash)
+        return fingerHash
 
         print('Remove finger...')
         time.sleep(2)

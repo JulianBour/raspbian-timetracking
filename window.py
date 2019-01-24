@@ -3,6 +3,8 @@ sys.path.append("/var/projects/raspbian-timetracking/timetracking")
 
 import alogging as alogging
 import fingerprint as fp
+import userManagement as um
+import ttk as ttk
 from Tkinter import *
 from FullScreen import *
 from Functions import *
@@ -73,7 +75,36 @@ def cancel():
     createStandardBody()
 
 def addFingerprint():
-    bodyMessage = fp.addFinger()
+    tempUsers = um.getAllStaffNames()
+
+
+    users = []
+    i = 0
+    for x in tempUsers:
+        users.insert(i, ''.join(x))
+        i = i + 1
+
+    tkvar = StringVar(root)
+    tkvar.set('SELECT USER')
+    popupMenu = ttk.Combobox(body, values = users, height = 10, justify = CENTER, width = 30)
+    #popupMenu = OptionMenu(body, tkvar, *users)
+
+    popupMenu.config(font=('Helvetica', 30))
+    #menu = popupMenu.nametowidget(popupMenu.menuname)
+    #menu.configure(font=('Helvetica', 30))
+
+    popupMenu.place(relx = 0.5,rely = 0.5, anchor = CENTER)
+
+
+
+
+    #TODO show users as buttons
+    #for x in users
+     #   bodyMessage=x
+
+
+    #TODO start
+    #bodyMessage = fp.addFinger()
     authMessageLabel.config(text=bodyMessage, font = ("Helvetica", int(MAXHEIGHT * 0.05)))
 
 def devExit():
